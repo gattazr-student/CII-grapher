@@ -1,2 +1,6 @@
-build
-dyna
+# Builded files
+build/
+dyna/
+
+# ant files
+.ant-targets-build.xml
