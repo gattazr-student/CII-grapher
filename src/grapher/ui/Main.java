@@ -18,6 +18,7 @@ public class Main extends JFrame {
 		DefaultListModel<String> wListModel = new DefaultListModel<String>();
 		for(String expression : expressions) {
 			wListModel.addElement(expression);
+			grapher.add(expression);
 		}
 
 		JList wSidePanel = new JList(wListModel);
