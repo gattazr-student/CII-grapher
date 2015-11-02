@@ -138,8 +138,32 @@ public class Grapher extends JPanel implements MouseInputListener, MouseWheelLis
 		for(double y = ystep; y < ymax; y += ystep)  { drawYTick(g2, y); }
 		for(double y = -ystep; y > ymin; y -= ystep) { drawYTick(g2, y); }
 
+		/* Drawing of the zoom tectangle */
 		if (m_firstButtonPress == MouseEvent.BUTTON3 && !m_firstMousePos.equals(m_lastMousePos)) {
-			g2.drawRect((int)m_firstMousePos.getX(), (int)m_firstMousePos.getY(), (int)(m_lastMousePos.getX() - m_firstMousePos.getX()), (int)(m_lastMousePos.getY() - m_firstMousePos.getY()));
+			double wX;
+			double wY;
+			double wWidth;
+			double wHeight;
+
+			wWidth = m_firstMousePos.getX() - m_lastMousePos.getX();
+			/* Select the smallest x by checking if width is negative or not */
+			if(wWidth < 0){
+				wWidth = -wWidth;
+				wX = m_firstMousePos.getX();
+			}else{
+				wX = m_lastMousePos.getX();
+			}
+
+			wHeight = m_firstMousePos.getY() - m_lastMousePos.getY();
+			/* Select the smallest y by checking if width is negative or not */
+			if(wHeight < 0){
+				wHeight = -wHeight;
+				wY = m_firstMousePos.getY();
+			}else{
+				wY = m_lastMousePos.getY();
+			}
+
+			g2.drawRect((int)wX,(int)wY,(int)wWidth,(int)wHeight);
 		}
 
 	}
