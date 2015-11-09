@@ -27,7 +27,7 @@ import static java.lang.Math.*;
 import grapher.fc.*;
 
 
-public class Grapher extends JPanel implements MouseInputListener, MouseWheelListener {
+public class Grapher extends JPanel {
 	static final int MARGIN = 40;
 	static final int STEP = 5;
 
@@ -53,9 +53,11 @@ public class Grapher extends JPanel implements MouseInputListener, MouseWheelLis
 		xmin = -PI/2.; xmax = 3*PI/2;
 		ymin = -1.5;   ymax = 1.5;
 		m_firstButtonPress = 0;
-		addMouseListener(this);
-		addMouseMotionListener(this);
-		addMouseWheelListener(this);
+
+		MyMouseListener wListener = new MyMouseListener();
+		addMouseListener(wListener);
+		addMouseMotionListener(wListener);
+		addMouseWheelListener(wListener);
 		functions = new Vector<Function>();
 	}
 
@@ -236,85 +238,87 @@ public class Grapher extends JPanel implements MouseInputListener, MouseWheelLis
 		repaint();
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+	class MyMouseListener implements MouseInputListener, MouseWheelListener {
 
-	}
+		@Override
+		public void mouseClicked(MouseEvent arg0) {
+			// TODO Auto-generated method stub
 
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		if (m_firstButtonPress == 0) {
-			m_firstMousePos = arg0.getPoint();
-			m_lastMousePos = m_firstMousePos;
-			m_firstButtonPress = arg0.getButton();
 		}
-	}
 
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		if (m_firstButtonPress == arg0.getButton()) {
-			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-			Point wCurrent = arg0.getPoint();
-			int wButton = arg0.getButton();
+		@Override
+		public void mouseEntered(MouseEvent arg0) {
+			// TODO Auto-generated method stub
 
-			if(wCurrent.equals(m_firstMousePos) ) {
+		}
 
-				if (wButton == MouseEvent.BUTTON1) { // clic gauche
-					zoom(wCurrent,20);
-				}
-				if (wButton == MouseEvent.BUTTON3) { // clic droit
-					zoom(wCurrent,-20);
-				}
+		@Override
+		public void mouseExited(MouseEvent arg0) {
+			// TODO Auto-generated method stub
 
-			} else {
-				if (wButton == MouseEvent.BUTTON3) {
-					zoom(m_firstMousePos,wCurrent);
-				}
+		}
+
+		@Override
+		public void mousePressed(MouseEvent arg0) {
+			if (m_firstButtonPress == 0) {
+				m_firstMousePos = arg0.getPoint();
+				m_lastMousePos = m_firstMousePos;
+				m_firstButtonPress = arg0.getButton();
 			}
-			m_firstMousePos = null;
-			m_lastMousePos = null;
-			m_firstButtonPress = 0;
 		}
-	}
 
-	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		if (m_firstButtonPress == MouseEvent.BUTTON1) {
-			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			translate((int)(arg0.getX() - m_lastMousePos.getX()), (int)(arg0.getY() - m_lastMousePos.getY()));
-			m_lastMousePos = arg0.getPoint();
-		} else if (m_firstButtonPress == MouseEvent.BUTTON3) {
-			m_lastMousePos = arg0.getPoint();
-			repaint();
+		@Override
+		public void mouseReleased(MouseEvent arg0) {
+			if (m_firstButtonPress == arg0.getButton()) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				Point wCurrent = arg0.getPoint();
+				int wButton = arg0.getButton();
+
+				if(wCurrent.equals(m_firstMousePos) ) {
+
+					if (wButton == MouseEvent.BUTTON1) { // clic gauche
+						zoom(wCurrent,20);
+					}
+					if (wButton == MouseEvent.BUTTON3) { // clic droit
+						zoom(wCurrent,-20);
+					}
+
+				} else {
+					if (wButton == MouseEvent.BUTTON3) {
+						zoom(m_firstMousePos,wCurrent);
+					}
+				}
+				m_firstMousePos = null;
+				m_lastMousePos = null;
+				m_firstButtonPress = 0;
+			}
 		}
-	}
 
-	@Override
-	public void mouseMoved(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent arg0) {
-		if (arg0.getWheelRotation() < 0) {
-			zoom(arg0.getPoint(), 5);
-		} else {
-			zoom(arg0.getPoint(), -5);
+		@Override
+		public void mouseDragged(MouseEvent arg0) {
+			if (m_firstButtonPress == MouseEvent.BUTTON1) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				translate((int)(arg0.getX() - m_lastMousePos.getX()), (int)(arg0.getY() - m_lastMousePos.getY()));
+				m_lastMousePos = arg0.getPoint();
+			} else if (m_firstButtonPress == MouseEvent.BUTTON3) {
+				m_lastMousePos = arg0.getPoint();
+				repaint();
+			}
 		}
+
+		@Override
+		public void mouseMoved(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void mouseWheelMoved(MouseWheelEvent arg0) {
+			if (arg0.getWheelRotation() < 0) {
+				zoom(arg0.getPoint(), 5);
+			} else {
+				zoom(arg0.getPoint(), -5);
+			}
+		}
+
 	}
-
-
 }
