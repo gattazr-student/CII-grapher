@@ -11,14 +11,14 @@ import java.net.URLClassLoader;
 public class FunctionFactory {
 	static final String NAME = "DynamicFunction";
 	static final String PATH = "dyna";
-	
+
 	public static Function createFunction(String expression) {
 		File temp = new File(NAME + ".java");
 		temp.delete();
-		try { 
+		try {
 			temp.createNewFile();
 			temp.deleteOnExit();
-			
+
 			BufferedWriter out = new BufferedWriter(new FileWriter(temp));
 			out.write("package grapher.fc;\n");
 			out.write("import static java.lang.Math.*;\n");
@@ -28,23 +28,23 @@ public class FunctionFactory {
 			out.write("}\n");
 			out.close();
 		}
-		catch(IOException e) { 
-			throw new RuntimeException("unable to create file."); 
+		catch(IOException e) {
+			throw new RuntimeException("unable to create file.");
 		}
-		
+
 		File path = new File(PATH);
 		if(!path.exists()) {
 			path.mkdir();
 		}
-		
+
 		if(com.sun.tools.javac.Main.compile(new String[] { "-d", PATH, NAME + ".java" }) != 0) {
 			throw new RuntimeException("compilation failed");
 		}
-		
+
 		URL url = null;
 		try { url = path.toURL(); }
 		catch(MalformedURLException e) {}
-		
+
 		URLClassLoader loader = new URLClassLoader(new URL[] { url },
 		                                           Function.class.getClassLoader());
 		Class<Function> DynamicFunction = load(loader);
@@ -52,10 +52,10 @@ public class FunctionFactory {
 		try { instance = DynamicFunction.newInstance(); }
 		catch(InstantiationException e) {}
 		catch(IllegalAccessException e) {}
-		
+
 		return instance;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected static Class<Function> load(ClassLoader loader) {
 		try {

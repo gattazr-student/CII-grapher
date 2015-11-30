@@ -45,14 +45,11 @@ public class Grapher extends JPanel {
 
 	protected Vector<Function> functions;
 
-	private Point m_firstMousePos;
-	private Point m_lastMousePos;
-	private int m_firstButtonPress;
+	Automata m_state = Automata.init(this);
 
 	public Grapher() {
 		xmin = -PI/2.; xmax = 3*PI/2;
 		ymin = -1.5;   ymax = 1.5;
-		m_firstButtonPress = 0;
 
 		MyMouseListener wListener = new MyMouseListener();
 		addMouseListener(wListener);
@@ -140,34 +137,8 @@ public class Grapher extends JPanel {
 		for(double y = ystep; y < ymax; y += ystep)  { drawYTick(g2, y); }
 		for(double y = -ystep; y > ymin; y -= ystep) { drawYTick(g2, y); }
 
-		/* Drawing of the zoom tectangle */
-		if (m_firstButtonPress == MouseEvent.BUTTON3 && !m_firstMousePos.equals(m_lastMousePos)) {
-			double wX;
-			double wY;
-			double wWidth;
-			double wHeight;
-
-			wWidth = m_firstMousePos.getX() - m_lastMousePos.getX();
-			/* Select the smallest x by checking if width is negative or not */
-			if(wWidth < 0){
-				wWidth = -wWidth;
-				wX = m_firstMousePos.getX();
-			}else{
-				wX = m_lastMousePos.getX();
-			}
-
-			wHeight = m_firstMousePos.getY() - m_lastMousePos.getY();
-			/* Select the smallest y by checking if width is negative or not */
-			if(wHeight < 0){
-				wHeight = -wHeight;
-				wY = m_firstMousePos.getY();
-			}else{
-				wY = m_lastMousePos.getY();
-			}
-
-			g2.drawRect((int)wX,(int)wY,(int)wWidth,(int)wHeight);
-		}
-
+		/* TODO: draw automate here */
+		m_state.draw(g2);
 	}
 
 	protected double dx(int dX) { return  (double)((xmax-xmin)*dX/W); }
@@ -243,67 +214,34 @@ public class Grapher extends JPanel {
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent arg0) {
 			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void mouseExited(MouseEvent arg0) {
 			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void mousePressed(MouseEvent arg0) {
-			if (m_firstButtonPress == 0) {
-				m_firstMousePos = arg0.getPoint();
-				m_lastMousePos = m_firstMousePos;
-				m_firstButtonPress = arg0.getButton();
-			}
+			/* TODO: glue */
+			m_state = m_state.press(arg0);
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
-			if (m_firstButtonPress == arg0.getButton()) {
-				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-				Point wCurrent = arg0.getPoint();
-				int wButton = arg0.getButton();
-
-				if(wCurrent.equals(m_firstMousePos) ) {
-
-					if (wButton == MouseEvent.BUTTON1) { // clic gauche
-						zoom(wCurrent,20);
-					}
-					if (wButton == MouseEvent.BUTTON3) { // clic droit
-						zoom(wCurrent,-20);
-					}
-
-				} else {
-					if (wButton == MouseEvent.BUTTON3) {
-						zoom(m_firstMousePos,wCurrent);
-					}
-				}
-				m_firstMousePos = null;
-				m_lastMousePos = null;
-				m_firstButtonPress = 0;
-			}
+			/* TODO: glue */
+			m_state = m_state.release(arg0);
 		}
 
 		@Override
 		public void mouseDragged(MouseEvent arg0) {
-			if (m_firstButtonPress == MouseEvent.BUTTON1) {
-				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-				translate((int)(arg0.getX() - m_lastMousePos.getX()), (int)(arg0.getY() - m_lastMousePos.getY()));
-				m_lastMousePos = arg0.getPoint();
-			} else if (m_firstButtonPress == MouseEvent.BUTTON3) {
-				m_lastMousePos = arg0.getPoint();
-				repaint();
-			}
+			/* TODO: glue */
+			m_state = m_state.move(arg0);
 		}
 
 		@Override
@@ -313,11 +251,7 @@ public class Grapher extends JPanel {
 
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent arg0) {
-			if (arg0.getWheelRotation() < 0) {
-				zoom(arg0.getPoint(), 5);
-			} else {
-				zoom(arg0.getPoint(), -5);
-			}
+			m_state = m_state.wheel(arg0);
 		}
 
 	}
