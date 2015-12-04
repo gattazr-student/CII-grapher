@@ -22,7 +22,9 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.ImageObserver;
 import java.text.AttributedCharacterIterator;
 import java.util.Vector;
+import javax.swing.DefaultListModel;
 
+import java.util.Enumeration;
 import static java.lang.Math.*;
 import grapher.fc.*;
 
@@ -43,11 +45,11 @@ public class Grapher extends JPanel {
 	protected double xmin, xmax;
 	protected double ymin, ymax;
 
-	protected Vector<Function> functions;
+	protected DefaultListModel<Function> functions;
 
 	Automata m_state = Automata.init(this);
 
-	public Grapher() {
+	public Grapher(DefaultListModel<Function> aFunctions) {
 		xmin = -PI/2.; xmax = 3*PI/2;
 		ymin = -1.5;   ymax = 1.5;
 
@@ -55,16 +57,7 @@ public class Grapher extends JPanel {
 		addMouseListener(wListener);
 		addMouseMotionListener(wListener);
 		addMouseWheelListener(wListener);
-		functions = new Vector<Function>();
-	}
-
-	public void add(String expression) {
-		add(FunctionFactory.createFunction(expression));
-	}
-
-	public void add(Function function) {
-		functions.add(function);
-		repaint();
+		this.functions = aFunctions;
 	}
 
 	public Dimension getPreferredSize() { return new Dimension(W, H); }
@@ -112,7 +105,10 @@ public class Grapher extends JPanel {
 			Xs[i] = X(x);
 		}
 
-		for(Function f : functions) {
+		/* Iterate throught ListModel */
+		Enumeration<Function> wFunctions = functions.elements();
+		while(wFunctions.hasMoreElements()){
+			Function f = wFunctions.nextElement();
 			// y values
 			int Ys[] = new int[N];
 			for(int i = 0; i < N; i++) {
