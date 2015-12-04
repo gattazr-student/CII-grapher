@@ -4,8 +4,6 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.JList;
 import javax.swing.SwingUtilities;
-import javax.swing.ListModel;
-import javax.swing.DefaultListModel;
 
 
 public class Main extends JFrame {
@@ -13,17 +11,15 @@ public class Main extends JFrame {
 		super(title);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		Grapher grapher = new Grapher();
+		Grapher wGrapher = new Grapher();
+		SidePanel wSidePanel = new SidePanel();
 
-		DefaultListModel<String> wListModel = new DefaultListModel<String>();
 		for(String expression : expressions) {
-			wListModel.addElement(expression);
-			grapher.add(expression);
+			wSidePanel.addExpression(expression);
+			wGrapher.add(expression);
 		}
 
-		JList wSidePanel = new JList(wListModel);
-
-		add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, wSidePanel, grapher));
+		add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, wSidePanel, wGrapher));
 		pack();
 	}
 
