@@ -25,6 +25,7 @@ public class Main extends JFrame {
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+		/* Create a ListModel that will contains all the Functions */
 		this.pFunctions = new DefaultListModel<Function>();
 
 		/* Create the add and del actions here */
@@ -38,7 +39,7 @@ public class Main extends JFrame {
 		Action wDelAction = new AbstractAction(){
 			public void actionPerformed(ActionEvent e){
 				int[] wIndices = Main.this.pSidePanel.getSelectedIndices();
-				/* Reverse the array */
+				/* Parse the array in reverse */
 				for(int wI = wIndices.length-1; wI >= 0; wI--){
 					Main.this.pFunctions.remove(wIndices[wI]);
 				}
@@ -46,13 +47,16 @@ public class Main extends JFrame {
 			}
 		};
 
+		/* Create the Grapher and SidePanel */
 		this.pGrapher = new Grapher(this.pFunctions);
 		this.pSidePanel = new SidePanel(this.pFunctions, wAddAction, wDelAction);
 
+		/* Add all functions given to the program as paramters to the model */
 		for(String expression : expressions) {
 			this.pFunctions.addElement(FunctionFactory.createFunction(expression));
 		}
 
+		/* add the grapher and Sidepanel to a JSplitPane in the JFrame */
 		add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.pSidePanel, this.pGrapher));
 		pack();
 	}

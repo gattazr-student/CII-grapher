@@ -133,7 +133,7 @@ public class Grapher extends JPanel {
 		for(double y = ystep; y < ymax; y += ystep)  { drawYTick(g2, y); }
 		for(double y = -ystep; y > ymin; y -= ystep) { drawYTick(g2, y); }
 
-		/* TODO: draw automate here */
+		/* draw Automata */
 		m_state.draw(g2);
 	}
 
@@ -224,19 +224,16 @@ public class Grapher extends JPanel {
 
 		@Override
 		public void mousePressed(MouseEvent arg0) {
-			/* TODO: glue */
 			m_state = m_state.press(arg0);
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
-			/* TODO: glue */
 			m_state = m_state.release(arg0);
 		}
 
 		@Override
 		public void mouseDragged(MouseEvent arg0) {
-			/* TODO: glue */
 			m_state = m_state.move(arg0);
 		}
 
